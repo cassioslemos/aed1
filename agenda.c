@@ -156,6 +156,7 @@ void menu (void *pBuffer){
 			listar(pBuffer);
 			break;
 			case 0:
+            free(pBuffer);
 			exit(1);
 			break;
 			default:
