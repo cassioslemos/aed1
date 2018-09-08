@@ -28,14 +28,14 @@ void* incluir (void *pBuffer){
 	pBuffer2 = pBuffer2 + sizeof(AGENDA)*(v->npessoas-1);
 	pessoa = pBuffer2;
 
-	printf("Nome: ");
+	printf("\nNome: ");
 	getchar();
 	fgets(pessoa->nome,40,stdin);
-	pessoa->nome[strcspn(pessoa->nome,"/n")]=0;
+	pessoa->nome[strcspn(pessoa->nome,"\n")]=0;
 	printf("Telefone: ");
 	fgets(pessoa->numero,16,stdin);
-	pessoa->numero[strcspn(pessoa->numero,"/n")]=0;
-		printf("%s\n", pessoa->nome);
+	pessoa->numero[strcspn(pessoa->numero,"\n")]=0;
+	printf("\n");
 
 	return pBuffer;
 
@@ -47,7 +47,6 @@ void* excluir (void *pBuffer){
 
     v=pBuffer;
     pessoa = pBuffer + sizeof(VARIAVEIS);
-    //printf("%skkk\n", pessoa->nome);
     v->teste = 1; // verdadeiro
 
     if(v->npessoas == 0){
@@ -56,10 +55,10 @@ void* excluir (void *pBuffer){
     }
 
     while(v->teste){ // enquanto for verdadeiro
-    	printf("Digite o nome que deseja excluir: ");
+    	printf("\nDigite o nome que deseja excluir: ");
     	getchar();
    		fgets(v->nome,40,stdin);
-    	v->nome[strcspn(v->nome,"/n")]=0;
+    	v->nome[strcspn(v->nome,"\n")]=0;
 
 	    for(v->i=0;v->i < v->npessoas;v->i++){
 	    	if((strcmp(v->nome, pessoa[v->i].nome)) == 0){
@@ -71,19 +70,64 @@ void* excluir (void *pBuffer){
 	    		v->tamBuffer = v->tamBuffer - sizeof(AGENDA);
 	    		pBuffer = realloc(pBuffer, v->tamBuffer);
 	    		v->teste = 0;
+	    		printf("\nContato excluido com sucesso!\n\n");
 	    		break;
 	    	}
-	    	
+
 	    }
 
 	    if(v->teste){
 	    	printf("\nPessoa nao encontrada!\nVoce deseja tentar novamente: (1) Sim   (0) Nao\n");
 	    	scanf("%d", &v->teste);
+	    	printf("\n");
 	    }
 	}
 
-	//printf("%s\n", pessoa->nome);
 	return pBuffer;
+}
+
+void buscar (void *pBuffer){
+    VARIAVEIS *v;
+    AGENDA *contato;
+    v=pBuffer;
+    contato=pBuffer+sizeof(VARIAVEIS);
+    v->teste=1;
+    if (v->npessoas == 0){
+        printf("\nAgenda Vazia!\n\n");
+    }
+    else {
+        printf("\nInforme um nome: ");
+        getchar();
+        fgets(v->nome,40,stdin);
+        v->nome[strcspn(v->nome,"\n")] = 0;
+        for(v->i=0; v->i < v->npessoas; v->i++, contato++){
+            if(strcmp(v->nome,contato->nome) == 0){
+                v->teste=0;
+                printf("\nNome: %s\nTelefone: %s\n\n", contato->nome, contato->numero);
+                break;
+            }
+        }
+        if (v->teste){
+            printf("\nPessoa nao encontrada!\n\n");
+        }
+    }
+}
+
+void listar (void *pBuffer){
+    VARIAVEIS *v;
+    AGENDA *contato;
+    v=pBuffer;
+    contato=pBuffer+sizeof(VARIAVEIS);
+    if(v->npessoas == 0){
+        printf("\nAgenda vazia!\n\n");
+    }
+    else{
+        printf("\n");
+        for(v->i = 0; v->i < v->npessoas; v->i++){
+            printf("Nome: %s \nTelefone: %s\n\n", contato->nome, contato->numero);
+            contato++;
+        }
+    }
 }
 
 void menu (void *pBuffer){
@@ -106,10 +150,10 @@ void menu (void *pBuffer){
 			pBuffer = excluir(pBuffer);
 			break;
 			case 3:
-			printf("teste3");
+			buscar(pBuffer);
 			break;
 			case 4:
-			printf("teste4");
+			listar(pBuffer);
 			break;
 			case 0:
 			exit(1);
