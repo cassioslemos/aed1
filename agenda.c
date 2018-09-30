@@ -2,15 +2,34 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct variaveis{
-	int i,i2,op,npessoas, teste, tamBuffer;
-	char nome[40];
-}VARIAVEIS;
 
 typedef struct agenda{
 	char nome[40];
 	char numero[16];
 }AGENDA;
+
+typedef struct variaveis{
+	int i,i2,op,npessoas, teste, tamBuffer;
+	char nome[40];
+	AGENDA tmp;
+}VARIAVEIS;
+
+void Insertionsort (void *pBuffer) {
+	AGENDA *pessoa;
+	VARIAVEIS *v;
+	pessoa=pBuffer+sizeof(VARIAVEIS);
+	v=pBuffer;
+	for (v->i2=1; v->i2 < v->npessoas; v->i2++) {
+		v->i =v->i2 - 1;
+		v->tmp = pessoa[v->i2];
+		while ( (v->i>=0) && (v->tmp.nome[0] < pessoa[v->i].nome[0]) ) {
+			pessoa[v->i+1] = pessoa[v->i];
+			 v->i--;
+		}
+
+		pessoa[v->i+1] = v->tmp;
+	}
+ }
 
 void* incluir (void *pBuffer){
 	VARIAVEIS *v;
@@ -35,6 +54,7 @@ void* incluir (void *pBuffer){
 	printf("Telefone: ");
 	fgets(pessoa->numero,16,stdin);
 	pessoa->numero[strcspn(pessoa->numero,"\n")]=0;
+	Insertionsort(pBuffer);
 	printf("\n");
 
 	return pBuffer;
