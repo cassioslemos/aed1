@@ -9,9 +9,9 @@ typedef struct agenda{
 }AGENDA;
 
 typedef struct variaveis{
-	int i,i2,op,npessoas, teste, tamBuffer;
+	int i,i2,op,npessoas, teste, tamBuffer,min_id;;
 	char nome[40];
-	AGENDA tmp;
+	AGENDA tmp, min;
 }VARIAVEIS;
 
 void Insertionsort (void *pBuffer) {
@@ -30,7 +30,31 @@ void Insertionsort (void *pBuffer) {
 		pessoa[v->i+1] = v->tmp;
 	}
  }
-
+ 
+ void Selectsort (void *pBuffer) {
+   AGENDA *pessoa;
+   VARIAVEIS *v = pBuffer;
+   v->min_id = 0;
+   pessoa = pBuffer+sizeof(VARIAVEIS);
+   for (v->i=0; v->i<v->npessoas-1; v->i++) { 
+	   printf("\npra todos numeros");
+     v->min = pessoa[v->i]; 
+     for (v->i2=v->i+1; v->i2<v->npessoas; v->i2++) {
+		 printf("\npros que falta rodenasr");
+		 printf("\n%s\n%s", pessoa[v->i2].nome, v->min.nome);
+       if (pessoa[v->i2].nome[0] < v->min.nome[0]) { 
+		   printf("\ne o menor");
+         v->min = pessoa[v->i2]; 
+         v->min_id = v->i2; 
+     	 } 
+     	 }
+     	 printf("\ntroca i:%d por min:%d", v->i, v->min_id);
+     v->tmp = pessoa[v->i]; 
+     pessoa[v->i] = pessoa[v->min_id]; 
+     pessoa[v->min_id] = v->tmp;
+	v->min_id = v->i+1; 
+ }
+}
 void* incluir (void *pBuffer){
 	VARIAVEIS *v;
 	AGENDA *pessoa;
@@ -54,16 +78,31 @@ void* incluir (void *pBuffer){
 	printf("Telefone: ");
 	fgets(pessoa->numero,16,stdin);
 	pessoa->numero[strcspn(pessoa->numero,"\n")]=0;
-	Insertionsort(pBuffer);
 	printf("\n");
-
 	return pBuffer;
 
 }
 
+void ordenacao (void *pBuffer){
+	VARIAVEIS *v=pBuffer;
+	printf("\nEscolha o algoritmo de ordenacao: \n1- Insertion sort\n2- Select sort\n\nopcao: ");
+	scanf("%d",&v->op);
+	switch(v->op){
+			case 1:
+			Insertionsort(pBuffer);
+			break;
+			case 2:
+			Selectsort(pBuffer);
+			break;
+			default:
+			printf("Comando invalido\n\n");
+			break;
+		}	
+}
+
 void* excluir (void *pBuffer){
     VARIAVEIS *v;
-    AGENDA *pessoa, *prox;
+    AGENDA *pessoa;
 
     v=pBuffer;
     pessoa = pBuffer + sizeof(VARIAVEIS);
@@ -159,6 +198,7 @@ void menu (void *pBuffer){
         printf("2- Apagar pessoa\n");
 		printf("3- Buscar pessoa\n");
 		printf("4- Listar pessoas\n");
+		printf("5- Ordenar pessoas\n");
 		printf("0- Sair do programa\n\n");
 		printf("Opcao: ");
 		scanf("%d",&p->op);
@@ -174,6 +214,9 @@ void menu (void *pBuffer){
 			break;
 			case 4:
 			listar(pBuffer);
+			break;
+			case 5:
+			ordenacao(pBuffer);
 			break;
 			case 0:
             free(pBuffer);
